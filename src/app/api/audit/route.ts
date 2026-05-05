@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 import type {
   AgentResult,
@@ -263,8 +263,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     status: "pending",
   });
 
-  // Fire-and-forget pipeline. We intentionally do NOT await.
-  void runPipeline(audit.id, audit.target_url, audit.tier);
+  // On Vercel serverless, fire-and-forget AFTER returning is killed.
+  // Use waitUntil so the runtime keeps the function alive until completion.
+  // Falls back to fire-and-forget if waitUntil unavailable (local dev).
+  try {
+    const { waitUntil } = await import("@vercel/functions");
+    waitUntil(runPipeline(audit.id, audit.target_url, audit.tier));
+  } catch {
+    void runPipeline(audit.id, audit.target_url, audit.tier);
+  }
 
   const resp: StartAuditResponse = {
     audit_id: audit.id,
