@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
+  // Heavy/native packages must stay external (not bundled by webpack)
+  serverExternalPackages: ["@react-pdf/renderer", "googleapis"],
   experimental: {
     serverActions: { bodySizeLimit: "5mb" },
   },
-  // serverless functions can be long for an audit
-  serverRuntimeConfig: { maxDuration: 300 },
 };
 
 export default config;

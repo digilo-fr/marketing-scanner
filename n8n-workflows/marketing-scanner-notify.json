@@ -1,0 +1,111 @@
+{
+  "name": "Marketing Scanner — Notify",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "marketing-scanner-notify",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "marketing-scanner-notify"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "businessName",
+              "name": "businessName",
+              "value": "={{ $json.body.business_name }}",
+              "type": "string"
+            },
+            {
+              "id": "overallScore",
+              "name": "overallScore",
+              "value": "={{ $json.body.overall_score }}",
+              "type": "number"
+            },
+            {
+              "id": "grade",
+              "name": "grade",
+              "value": "={{ $json.body.grade }}",
+              "type": "string"
+            },
+            {
+              "id": "targetUrl",
+              "name": "targetUrl",
+              "value": "={{ $json.body.target_url }}",
+              "type": "string"
+            },
+            {
+              "id": "pdfUrl",
+              "name": "pdfUrl",
+              "value": "={{ $json.body.pdf_url }}",
+              "type": "string"
+            },
+            {
+              "id": "recommendations",
+              "name": "recommendations",
+              "value": "={{ $json.body.top_recommendations.map((r, i) => `${i+1}. ${r.title} (jusqu'à ${r.impact_estimate_max}€/mois)`).join('\\n') }}",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "=🎯 Audit Marketing terminé\n\n📊 {{ $json.body.business_name }} — Score {{ $json.body.overall_score }}/100 ({{ $json.body.grade }})\n🔗 {{ $json.body.target_url }}\n\nTop 3 recos :\n{{ $json.body.top_recommendations.map((r, i) => `${i+1}. ${r.title} (jusqu'à ${r.impact_estimate_max}€/mois)`).join('\\n') }}\n\n📄 PDF : {{ $json.body.pdf_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-node",
+      "name": "Map payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/REPLACE_WITH_PHONE_NUMBER_ID/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"REPLACE_WITH_RECIPIENT_PHONE\",\n  \"type\": \"text\",\n  \"text\": { \"body\": $json.message }\n}",
+        "options": {}
+      },
+      "id": "whatsapp-node",
+      "name": "Send WhatsApp message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300],
+      "notes": "Replace REPLACE_WITH_PHONE_NUMBER_ID and REPLACE_WITH_RECIPIENT_PHONE. Configure HTTP Header Auth credential with `Authorization: Bearer <WHATSAPP_TOKEN>`."
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Map payload", "type": "main", "index": 0 }]]
+    },
+    "Map payload": {
+      "main": [[{ "node": "Send WhatsApp message", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}
