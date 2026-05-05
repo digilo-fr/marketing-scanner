@@ -40,29 +40,20 @@ const StartAuditSchema = z.object({
 });
 
 // ============================================================
-// Auth resolution (NextAuth if available, x-user-email fallback)
+// Auth resolution (NextAuth session, x-user-email fallback)
 // ============================================================
 
 async function resolveUserEmail(req: NextRequest): Promise<string | null> {
-  // Try NextAuth via dynamic import so the file remains buildable before
-  // `src/lib/auth.ts` exists.
   try {
-    const authPath = "@/lib/auth";
-    const authMod = (await import(/* @vite-ignore */ authPath).catch(
-      () => null
-    )) as { authOptions?: unknown } | null;
-    const nextAuthMod = (await import("next-auth").catch(() => null)) as
-      | { getServerSession?: (opts?: unknown) => Promise<unknown> }
+    const { getServerSession } = await import("next-auth");
+    const { authOptions } = await import("@/lib/auth");
+    const session = (await getServerSession(authOptions)) as
+      | { user?: { email?: string } }
       | null;
-    if (authMod?.authOptions && nextAuthMod?.getServerSession) {
-      const session = (await nextAuthMod.getServerSession(authMod.authOptions)) as
-        | { user?: { email?: string } }
-        | null;
-      const email = session?.user?.email;
-      if (email) return email;
-    }
-  } catch {
-    // ignore — fall through to header
+    const email = session?.user?.email;
+    if (email) return email;
+  } catch (err) {
+    console.warn("[audit/post] getServerSession failed:", (err as Error).message);
   }
   const header = req.headers.get("x-user-email");
   return header ? header.trim() : null;
@@ -74,14 +65,16 @@ async function resolveUserEmail(req: NextRequest): Promise<string | null> {
 
 async function runAgentsParallel(
   site: ScrapedSite,
-  tier: AuditTier
+  tier: AuditTier,
+  project?: { name: string; type: string; description: string }
 ): Promise<{ results: AgentResult[]; llmUsed: string[] }> {
   // 6 agents in fixed order so the rotation in pickProvidersForTier is stable.
   const agentSpecs: {
     name: string;
     fn: (
       s: ScrapedSite,
-      providers: ReturnType<typeof pickProvidersForTier>
+      providers: ReturnType<typeof pickProvidersForTier>,
+      project?: { name: string; type: string; description: string }
     ) => Promise<AgentResult>;
   }[] = [
     { name: "content", fn: runContent },
@@ -102,7 +95,7 @@ async function runAgentsParallel(
       quickSpecs.map((spec, i) => {
         const providers = pickProvidersForTier(tier, i);
         providers.forEach((p) => llmUsed.push(`${p.provider}:${p.model}`));
-        return spec.fn(site, providers);
+        return spec.fn(site, providers, project);
       })
     );
     const results: AgentResult[] = [];
@@ -128,14 +121,28 @@ async function runAgentsParallel(
   return { results, llmUsed };
 }
 
-async function runPipeline(auditId: string, targetUrl: string, tier: AuditTier) {
+async function runPipeline(
+  auditId: string,
+  targetUrl: string,
+  tier: AuditTier,
+  projectId: string
+) {
   const startedAt = Date.now();
   try {
     await updateAudit(auditId, { status: "scraping" });
     const site = await scrapeSite(targetUrl);
 
     await updateAudit(auditId, { status: "analyzing" });
-    const { results, llmUsed } = await runAgentsParallel(site, tier);
+    // Load project context to personalize the prompts.
+    const projectRow = await getProject(projectId);
+    const projectCtx = projectRow
+      ? {
+          name: projectRow.name,
+          type: projectRow.type,
+          description: projectRow.description,
+        }
+      : undefined;
+    const { results, llmUsed } = await runAgentsParallel(site, tier, projectCtx);
     if (results.length === 0) {
       throw new Error("All agents failed; no results to synthesize.");
     }
@@ -268,9 +275,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // Falls back to fire-and-forget if waitUntil unavailable (local dev).
   try {
     const { waitUntil } = await import("@vercel/functions");
-    waitUntil(runPipeline(audit.id, audit.target_url, audit.tier));
+    waitUntil(runPipeline(audit.id, audit.target_url, audit.tier, audit.project_id));
   } catch {
-    void runPipeline(audit.id, audit.target_url, audit.tier);
+    void runPipeline(audit.id, audit.target_url, audit.tier, audit.project_id);
   }
 
   const resp: StartAuditResponse = {

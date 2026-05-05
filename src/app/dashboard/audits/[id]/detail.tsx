@@ -46,7 +46,10 @@ export function AuditDetail({ id }: { id: string }) {
 
     async function tick() {
       try {
-        const res = await fetch(`/api/audit/${id}`, { cache: "no-store" });
+        const res = await fetch(`/api/audit/${id}`, {
+          cache: "no-store",
+          credentials: "same-origin",
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = (await res.json()) as AuditStatusResponse;
         if (cancelled) return;

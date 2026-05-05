@@ -9,7 +9,16 @@ import { callLlm, type ProviderChoice } from "@/lib/llm-router";
 // Shared helpers (kept inline per-file to minimize cross-file deps)
 // ============================================================
 
-export function summarizeSiteForPrompt(site: ScrapedSite): string {
+export interface ProjectContext {
+  name: string;
+  type: string;
+  description: string;
+}
+
+export function summarizeSiteForPrompt(
+  site: ScrapedSite,
+  project?: ProjectContext
+): string {
   const h = site.homepage;
   const headings = h.headings
     .slice(0, 20)
@@ -20,7 +29,21 @@ export function summarizeSiteForPrompt(site: ScrapedSite): string {
     .map((p) => `- ${p.url} — "${p.title}" — ${p.meta_description.slice(0, 120)}`)
     .join("\n");
 
-  return [
+  const projectBlock = project
+    ? [
+        "============================================================",
+        `CONTEXTE DU PROJET (à PRIORISER absolument dans tes recommandations) :`,
+        `Nom du projet : ${project.name}`,
+        `Type : ${project.type}`,
+        `Description : ${project.description}`,
+        `→ Adapte le ton, la cible et les recommandations à ce contexte spécifique.`,
+        `→ Si le site analysé n'est PAS celui du projet (ex: prospect potentiel), audit le site analysé tel qu'il est, mais cadre les recos selon ce que ${project.name} peut leur vendre/proposer.`,
+        "============================================================",
+        "",
+      ].join("\n")
+    : "";
+
+  return projectBlock + [
     `URL: ${h.url}`,
     `Title: ${h.title}`,
     `Meta description: ${h.meta_description}`,
@@ -312,15 +335,17 @@ ${buildJsonSchemaInstruction(CATEGORY)}`;
 
 /**
  * Run the content & messaging agent against the scraped site.
+ * @param project optional project context that personalises recommendations
  */
 export async function runAgent(
   site: ScrapedSite,
-  providers: ProviderChoice[]
+  providers: ProviderChoice[],
+  project?: ProjectContext
 ): Promise<AgentResult> {
   return runAgentWithProviders(
     CATEGORY,
     SYSTEM,
-    summarizeSiteForPrompt(site),
+    summarizeSiteForPrompt(site, project),
     providers
   );
 }

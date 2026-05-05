@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getServerSession } from "next-auth";
 import type { AuditStatusResponse } from "@/types";
 
+import { authOptions } from "@/lib/auth";
 import {
   getAudit,
   isUserAllowed,
@@ -12,22 +14,13 @@ export const dynamic = "force-dynamic";
 
 async function resolveUserEmail(req: NextRequest): Promise<string | null> {
   try {
-    const authPath = "@/lib/auth";
-    const authMod = (await import(/* @vite-ignore */ authPath).catch(
-      () => null
-    )) as { authOptions?: unknown } | null;
-    const nextAuthMod = (await import("next-auth").catch(() => null)) as
-      | { getServerSession?: (opts?: unknown) => Promise<unknown> }
+    const session = (await getServerSession(authOptions)) as
+      | { user?: { email?: string } }
       | null;
-    if (authMod?.authOptions && nextAuthMod?.getServerSession) {
-      const session = (await nextAuthMod.getServerSession(authMod.authOptions)) as
-        | { user?: { email?: string } }
-        | null;
-      const email = session?.user?.email;
-      if (email) return email;
-    }
-  } catch {
-    // ignore
+    const email = session?.user?.email;
+    if (email) return email;
+  } catch (err) {
+    console.warn("[audit/get] getServerSession failed:", (err as Error).message);
   }
   const header = req.headers.get("x-user-email");
   return header ? header.trim() : null;

@@ -5,6 +5,8 @@ import {
   runAgentWithProviders,
   summarizeSiteForPrompt,
 } from "./content";
+// project context type re-imported above
+import type { ProjectContext } from "./content";
 
 const CATEGORY: Category = "competitive";
 
@@ -29,12 +31,13 @@ ${buildJsonSchemaInstruction(CATEGORY)}`;
  */
 export async function runAgent(
   site: ScrapedSite,
-  providers: ProviderChoice[]
+  providers: ProviderChoice[],
+  project?: ProjectContext
 ): Promise<AgentResult> {
   return runAgentWithProviders(
     CATEGORY,
     SYSTEM,
-    summarizeSiteForPrompt(site),
+    summarizeSiteForPrompt(site, project),
     providers
   );
 }

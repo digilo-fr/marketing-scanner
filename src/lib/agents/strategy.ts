@@ -5,6 +5,7 @@ import {
   runAgentWithProviders,
   summarizeSiteForPrompt,
 } from "./content";
+import type { ProjectContext } from "./content";
 
 const BRAND: Category = "brand";
 const GROWTH: Category = "growth";
@@ -46,12 +47,13 @@ ${buildJsonSchemaInstruction(GROWTH)}`;
  */
 export async function runBrandAgent(
   site: ScrapedSite,
-  providers: ProviderChoice[]
+  providers: ProviderChoice[],
+  project?: ProjectContext
 ): Promise<AgentResult> {
   return runAgentWithProviders(
     BRAND,
     BRAND_SYSTEM,
-    summarizeSiteForPrompt(site),
+    summarizeSiteForPrompt(site, project),
     providers
   );
 }
@@ -61,12 +63,13 @@ export async function runBrandAgent(
  */
 export async function runGrowthAgent(
   site: ScrapedSite,
-  providers: ProviderChoice[]
+  providers: ProviderChoice[],
+  project?: ProjectContext
 ): Promise<AgentResult> {
   return runAgentWithProviders(
     GROWTH,
     GROWTH_SYSTEM,
-    summarizeSiteForPrompt(site),
+    summarizeSiteForPrompt(site, project),
     providers
   );
 }
