@@ -29,7 +29,7 @@ export default async function AuthErrorPage({
             </p>
             <a
               href="mailto:driss.i@tantakcollectif.net"
-              className="inline-block text-sm font-medium text-violet-600 hover:text-violet-700"
+              className="inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
             >
               driss.i@tantakcollectif.net
             </a>
@@ -49,7 +49,7 @@ export default async function AuthErrorPage({
 
         <Link
           href="/auth/signin"
-          className="inline-block text-sm text-neutral-600 dark:text-neutral-400 underline hover:text-violet-600"
+          className="inline-block text-sm text-neutral-600 dark:text-neutral-400 underline hover:text-indigo-600"
         >
           Retour à la connexion
         </Link>

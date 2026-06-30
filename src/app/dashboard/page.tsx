@@ -90,7 +90,7 @@ export default async function DashboardPage() {
                     </span>
                     <Link
                       href={`/dashboard/audits/new?project=${p.id}`}
-                      className="text-violet-600 hover:text-violet-700 font-medium"
+                      className="text-indigo-600 hover:text-indigo-700 font-medium"
                     >
                       + Audit
                     </Link>
@@ -156,7 +156,7 @@ export default async function DashboardPage() {
                         <td className="px-4 py-3 text-right">
                           <Link
                             href={`/dashboard/audits/${a.id}`}
-                            className="inline-flex items-center gap-1 text-violet-600 hover:text-violet-700 font-medium"
+                            className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 font-medium"
                           >
                             Voir <ExternalLink className="h-3 w-3" />
                           </Link>

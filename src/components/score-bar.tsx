@@ -11,7 +11,7 @@ export function gradeFor(score: number): Grade {
 
 function colorFor(score: number): string {
   if (score >= 75) return "bg-emerald-500";
-  if (score >= 60) return "bg-violet-500";
+  if (score >= 60) return "bg-indigo-500";
   if (score >= 45) return "bg-amber-500";
   return "bg-red-500";
 }

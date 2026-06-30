@@ -12,7 +12,7 @@ export default async function AuditPage({
       <div className="mb-6">
         <Link
           href="/dashboard"
-          className="text-sm text-neutral-500 hover:text-violet-600"
+          className="text-sm text-neutral-500 hover:text-indigo-600"
         >
           ← Retour au dashboard
         </Link>

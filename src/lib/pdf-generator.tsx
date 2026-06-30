@@ -16,7 +16,7 @@ import type {
 import { CATEGORY_LABELS_FR, CATEGORY_WEIGHTS } from "@/types";
 
 const COLOR = {
-  primary: "#7c3aed",
+  primary: "#818cf8",
   primaryLight: "#faf5ff",
   text: "#0f172a",
   muted: "#64748b",

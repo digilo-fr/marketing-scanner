@@ -22,7 +22,7 @@ export default async function NewAuditPage({
       <div className="mb-6">
         <Link
           href="/dashboard"
-          className="text-sm text-neutral-500 hover:text-violet-600"
+          className="text-sm text-neutral-500 hover:text-indigo-600"
         >
           ← Retour au dashboard
         </Link>
@@ -37,7 +37,7 @@ export default async function NewAuditPage({
               Tu dois d'abord créer un projet.{" "}
               <Link
                 href="/dashboard/projects/new"
-                className="text-violet-600 hover:text-violet-700 font-medium"
+                className="text-indigo-600 hover:text-indigo-700 font-medium"
               >
                 Créer un projet →
               </Link>

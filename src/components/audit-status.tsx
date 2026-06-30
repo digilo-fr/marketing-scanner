@@ -46,7 +46,7 @@ export function AuditStatusPill({ status }: { status: AuditStatus }) {
             ? "bg-emerald-500"
             : status === "failed"
               ? "bg-red-500"
-              : "bg-violet-500") +
+              : "bg-indigo-500") +
           (animated ? " animate-pulse" : "")
         }
       />

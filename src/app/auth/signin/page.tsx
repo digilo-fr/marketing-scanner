@@ -9,7 +9,7 @@ export default function SignInPage() {
     <main className="min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-sm space-y-6 text-center">
         <div className="flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300">
             <Sparkles className="h-6 w-6" />
           </div>
         </div>

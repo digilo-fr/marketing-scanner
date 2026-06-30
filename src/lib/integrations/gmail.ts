@@ -61,17 +61,17 @@ function buildHtml(payload: NotificationPayload): string {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:24px 0;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
-        <tr><td style="background:#7c3aed;padding:24px 32px;color:#ffffff;">
+        <tr><td style="background:#818cf8;padding:24px 32px;color:#ffffff;">
           <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.8;">Marketing Scanner — Digilo</div>
           <div style="font-size:24px;font-weight:700;margin-top:6px;">Audit terminé</div>
         </td></tr>
         <tr><td style="padding:32px;">
           <p style="margin:0 0 8px 0;font-size:15px;color:#475569;">Résultats pour</p>
           <h1 style="margin:0 0 4px 0;font-size:22px;">${escapeHtml(payload.business_name)}</h1>
-          <a href="${escapeHtml(payload.target_url)}" style="color:#7c3aed;font-size:14px;">${escapeHtml(payload.target_url)}</a>
+          <a href="${escapeHtml(payload.target_url)}" style="color:#818cf8;font-size:14px;">${escapeHtml(payload.target_url)}</a>
 
           <div style="margin:28px 0;padding:24px;background:#faf5ff;border-radius:10px;text-align:center;">
-            <div style="font-size:13px;color:#7c3aed;letter-spacing:0.06em;text-transform:uppercase;">Score global</div>
+            <div style="font-size:13px;color:#818cf8;letter-spacing:0.06em;text-transform:uppercase;">Score global</div>
             <div style="font-size:48px;font-weight:800;color:#0f172a;margin-top:6px;">
               ${payload.overall_score}<span style="font-size:24px;color:#94a3b8;">/100</span>
             </div>
@@ -86,7 +86,7 @@ function buildHtml(payload: NotificationPayload): string {
           ${
             payload.pdf_url
               ? `<div style="text-align:center;margin:28px 0;">
-                   <a href="${escapeHtml(payload.pdf_url)}" style="display:inline-block;padding:12px 28px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">Télécharger le PDF complet</a>
+                   <a href="${escapeHtml(payload.pdf_url)}" style="display:inline-block;padding:12px 28px;background:#818cf8;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">Télécharger le PDF complet</a>
                  </div>`
               : ""
           }

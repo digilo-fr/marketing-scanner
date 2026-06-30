@@ -112,7 +112,7 @@ export function NewAuditForm({ projects, initialProjectId }: Props) {
               className={
                 "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition " +
                 (tier === t.value
-                  ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20"
+                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20"
                   : "border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900")
               }
             >

@@ -1,9 +1,10 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
 
 :root {
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
-  --primary: 263 70% 50%;
+  --primary: 234 89% 74%;   /* identité Digilo : indigo #818cf8 */
   --muted: 240 4.8% 95.9%;
   --border: 240 5.9% 90%;
 }
@@ -12,7 +13,7 @@
   :root {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --primary: 263 70% 65%;
+    --primary: 234 89% 74%;
     --muted: 240 3.7% 15.9%;
     --border: 240 3.7% 15.9%;
   }
@@ -21,5 +22,5 @@
 html, body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Sora', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }

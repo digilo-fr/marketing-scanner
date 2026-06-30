@@ -147,7 +147,7 @@ export function AuditDetail({ id }: { id: string }) {
                         className={
                           "h-2 w-2 rounded-full " +
                           (current
-                            ? "bg-violet-500 animate-pulse"
+                            ? "bg-indigo-500 animate-pulse"
                             : reached
                               ? "bg-emerald-500"
                               : "bg-neutral-300 dark:bg-neutral-700")
@@ -182,7 +182,7 @@ export function AuditDetail({ id }: { id: string }) {
                     {audit.overall_score}
                   </div>
                   <div className="pb-2">
-                    <div className="text-3xl font-semibold text-violet-600">
+                    <div className="text-3xl font-semibold text-indigo-600">
                       {audit.grade || gradeFor(audit.overall_score)}
                     </div>
                     <div className="text-xs text-neutral-500">/ 100</div>
@@ -235,7 +235,7 @@ export function AuditDetail({ id }: { id: string }) {
                 href={audit.target_url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-violet-600 hover:text-violet-700 break-all"
+                className="text-indigo-600 hover:text-indigo-700 break-all"
               >
                 {audit.target_url}
               </a>
@@ -266,7 +266,7 @@ export function AuditDetail({ id }: { id: string }) {
             href={audit.pdf_url}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-3 text-white font-medium hover:bg-violet-700 transition"
+            className="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-3 text-white font-medium hover:bg-indigo-700 transition"
           >
             <Download className="h-4 w-4" />
             Télécharger le PDF

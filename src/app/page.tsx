@@ -64,14 +64,14 @@ export default function Home() {
       <section className="mx-auto max-w-5xl px-6 pt-20 pb-24 sm:pt-28">
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-800 px-3 py-1 text-xs font-medium">
-            <Sparkles className="h-3 w-3 text-violet-500" />
+            <Sparkles className="h-3 w-3 text-indigo-500" />
             Powered by Digilo · Beta
           </div>
 
           <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
             Audit marketing complet,
             <br />
-            <span className="text-violet-500">en 60 secondes.</span>
+            <span className="text-indigo-500">en 60 secondes.</span>
           </h1>
 
           <p className="max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">
@@ -83,7 +83,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-3 pt-4">
             <Link
               href="/auth/signin"
-              className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-6 py-3 text-white font-medium hover:bg-violet-700 transition"
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-white font-medium hover:bg-indigo-700 transition"
             >
               Se connecter <ArrowRight className="h-4 w-4" />
             </Link>
@@ -112,7 +112,7 @@ export default function Home() {
                 key={title}
                 className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-6"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300">
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-semibold">{title}</h3>
@@ -138,7 +138,7 @@ export default function Home() {
                 className="relative rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-6"
               >
                 {t.badge && (
-                  <span className="absolute -top-3 right-4 rounded-full bg-violet-600 px-2.5 py-0.5 text-xs font-medium text-white">
+                  <span className="absolute -top-3 right-4 rounded-full bg-indigo-600 px-2.5 py-0.5 text-xs font-medium text-white">
                     {t.badge}
                   </span>
                 )}
@@ -164,7 +164,7 @@ export default function Home() {
       <footer className="border-t border-neutral-200 dark:border-neutral-800">
         <div className="mx-auto max-w-5xl px-6 py-8 text-sm text-neutral-500 flex flex-wrap items-center justify-between gap-3">
           <span>Marketing Scanner · Outil interne Digilo · 2026</span>
-          <Link href="/auth/signin" className="hover:text-violet-500">
+          <Link href="/auth/signin" className="hover:text-indigo-500">
             Se connecter →
           </Link>
         </div>

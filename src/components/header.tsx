@@ -14,7 +14,7 @@ export function Header() {
     <header className="border-b border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-950/70 backdrop-blur sticky top-0 z-10">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-          <Sparkles className="h-5 w-5 text-violet-500" />
+          <Sparkles className="h-5 w-5 text-indigo-500" />
           Marketing Scanner
         </Link>
         <div className="flex items-center gap-3">
@@ -30,7 +30,7 @@ export function Header() {
               ) : (
                 <div
                   aria-hidden
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 text-white text-sm font-semibold"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold"
                 >
                   {initial}
                 </div>
