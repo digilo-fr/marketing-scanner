@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
 
+/* Identité Digilo : sombre permanent (stratégie classe, pas l'OS) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
@@ -24,3 +27,5 @@ html, body {
   color: hsl(var(--foreground));
   font-family: 'Sora', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
+/* fond sombre Digilo quand la classe .dark est active (toujours) */
+html.dark, html.dark body { background: #0a0a12; color: #e8e8f0; }
