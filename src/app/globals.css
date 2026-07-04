@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
 
 /* Identité Digilo : sombre permanent (stratégie classe, pas l'OS) */
 @custom-variant dark (&:where(.dark, .dark *));

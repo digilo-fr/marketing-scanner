@@ -40,10 +40,12 @@ const StartAuditSchema = z.object({
 });
 
 // ============================================================
-// Auth resolution (NextAuth session, x-user-email fallback)
+// Auth resolution (NextAuth session only — the unauthenticated
+// x-user-email header fallback was removed: it let anyone
+// impersonate a user by setting the header)
 // ============================================================
 
-async function resolveUserEmail(req: NextRequest): Promise<string | null> {
+async function resolveUserEmail(): Promise<string | null> {
   try {
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
@@ -55,8 +57,7 @@ async function resolveUserEmail(req: NextRequest): Promise<string | null> {
   } catch (err) {
     console.warn("[audit/post] getServerSession failed:", (err as Error).message);
   }
-  const header = req.headers.get("x-user-email");
-  return header ? header.trim() : null;
+  return null;
 }
 
 // ============================================================
@@ -243,7 +244,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const email = await resolveUserEmail(req);
+  const email = await resolveUserEmail();
   if (!email) {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
   }

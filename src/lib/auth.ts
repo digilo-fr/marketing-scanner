@@ -2,11 +2,9 @@ import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { isUserAllowed, upsertUser } from "@/lib/sheets-db";
 
-const DEFAULT_ALLOWED = ["didigum@gmail.com", "driss.i@tantakcollectif.net"];
-
 function allowedEmails(): string[] {
   const env = process.env.ALLOWED_EMAILS;
-  if (!env) return DEFAULT_ALLOWED;
+  if (!env) return []; // fail closed: no env var → nobody whitelisted
   return env
     .split(",")
     .map((s) => s.trim().toLowerCase())

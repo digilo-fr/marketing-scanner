@@ -132,6 +132,29 @@ function objectToRow(
   });
 }
 
+/**
+ * Retry helper for Sheets API calls: retries on 429 / 5xx errors with
+ * exponential backoff (500ms, 1500ms). Other errors are thrown immediately.
+ */
+async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
+  const delays = [500, 1500];
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < tries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      const code = (err as { code?: number; status?: number; response?: { status?: number } });
+      const status = code.code ?? code.status ?? code.response?.status ?? 0;
+      const retryable = status === 429 || (status >= 500 && status < 600);
+      if (!retryable || attempt === tries - 1) throw err;
+      const delay = delays[Math.min(attempt, delays.length - 1)];
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw lastErr;
+}
+
 async function fetchAllRows(
   tab: string,
   cols: readonly string[]
@@ -139,10 +162,12 @@ async function fetchAllRows(
   const sheets = getSheets();
   const lastColLetter = colLetter(cols.length - 1);
   try {
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: rangeForTab(tab, lastColLetter),
-    });
+    const res = await withRetry(() =>
+      sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: rangeForTab(tab, lastColLetter),
+      })
+    );
     return { rows: (res.data.values ?? []) as unknown[][], lastColLetter };
   } catch (err) {
     throw new Error(
@@ -159,13 +184,15 @@ async function appendRow(
   const sheets = getSheets();
   const lastColLetter = colLetter(cols.length - 1);
   try {
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${tab}!A1:${lastColLetter}`,
-      valueInputOption: "RAW",
-      insertDataOption: "INSERT_ROWS",
-      requestBody: { values: [objectToRow(obj, cols)] },
-    });
+    await withRetry(() =>
+      sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${tab}!A1:${lastColLetter}`,
+        valueInputOption: "RAW",
+        insertDataOption: "INSERT_ROWS",
+        requestBody: { values: [objectToRow(obj, cols)] },
+      })
+    );
   } catch (err) {
     throw new Error(
       `[sheets-db] Failed to append to "${tab}": ${(err as Error).message}`
@@ -182,13 +209,15 @@ async function appendRows(
   const sheets = getSheets();
   const lastColLetter = colLetter(cols.length - 1);
   try {
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${tab}!A1:${lastColLetter}`,
-      valueInputOption: "RAW",
-      insertDataOption: "INSERT_ROWS",
-      requestBody: { values: objs.map((o) => objectToRow(o, cols)) },
-    });
+    await withRetry(() =>
+      sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${tab}!A1:${lastColLetter}`,
+        valueInputOption: "RAW",
+        insertDataOption: "INSERT_ROWS",
+        requestBody: { values: objs.map((o) => objectToRow(o, cols)) },
+      })
+    );
   } catch (err) {
     throw new Error(
       `[sheets-db] Failed to bulk-append to "${tab}": ${(err as Error).message}`
@@ -208,12 +237,14 @@ async function writeRow(
   const sheets = getSheets();
   const lastColLetter = colLetter(cols.length - 1);
   try {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${tab}!A${sheetRowNumber}:${lastColLetter}${sheetRowNumber}`,
-      valueInputOption: "RAW",
-      requestBody: { values: [objectToRow(obj, cols)] },
-    });
+    await withRetry(() =>
+      sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${tab}!A${sheetRowNumber}:${lastColLetter}${sheetRowNumber}`,
+        valueInputOption: "RAW",
+        requestBody: { values: [objectToRow(obj, cols)] },
+      })
+    );
   } catch (err) {
     throw new Error(
       `[sheets-db] Failed to update row ${sheetRowNumber} in "${tab}": ${(err as Error).message}`
@@ -425,19 +456,16 @@ export async function upsertUser(email: string, name: string): Promise<User> {
   return user;
 }
 
-const DEFAULT_ALLOWED_EMAILS = [
-  "didigum@gmail.com",
-  "driss.i@tantakcollectif.net",
-];
-
 /**
  * Whitelist check against ALLOWED_EMAILS env var (comma-separated).
- * Falls back to a built-in default whitelist if the env is missing.
+ * If the env var is missing, nobody is allowed (fail closed).
  */
 export function isUserAllowed(email: string): boolean {
   const raw = process.env.ALLOWED_EMAILS;
+  if (!raw) return false;
   const list = raw
-    ? raw.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)
-    : DEFAULT_ALLOWED_EMAILS.map((s) => s.toLowerCase());
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
   return list.includes(email.trim().toLowerCase());
 }

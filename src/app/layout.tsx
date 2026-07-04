@@ -15,6 +15,17 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Marketing Scanner — Digilo",
+    description:
+      "Audit marketing IA — score, recommandations actionnables, PDF prêt pour le client.",
+  },
+  // Outil interne : ne pas indexer.
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({

@@ -41,20 +41,95 @@ interface FetchResult {
   html: string;
 }
 
+// ============================================================
+// SSRF protection: only http/https, and never fetch hosts that
+// resolve to loopback / link-local / private IP ranges.
+// ============================================================
+
+const MAX_REDIRECTS = 5;
+
+function isPrivateIp(ip: string): boolean {
+  // IPv4
+  const m = ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (m) {
+    const [a, b] = [Number(m[1]), Number(m[2])];
+    if (a === 127) return true; // loopback
+    if (a === 10) return true; // private
+    if (a === 172 && b >= 16 && b <= 31) return true; // private
+    if (a === 192 && b === 168) return true; // private
+    if (a === 169 && b === 254) return true; // link-local / cloud metadata
+    if (a === 0) return true; // "this network"
+    return false;
+  }
+  // IPv6
+  const v6 = ip.toLowerCase();
+  if (v6 === "::1" || v6 === "::") return true; // loopback / unspecified
+  if (v6.startsWith("fc") || v6.startsWith("fd")) return true; // fc00::/7 ULA
+  if (
+    v6.startsWith("fe8") ||
+    v6.startsWith("fe9") ||
+    v6.startsWith("fea") ||
+    v6.startsWith("feb")
+  )
+    return true; // fe80::/10 link-local
+  if (v6.startsWith("::ffff:")) return isPrivateIp(v6.slice(7)); // v4-mapped
+  return false;
+}
+
+/** Returns true if the URL is safe to fetch (http/https + public IP only). */
+async function isSafeUrl(rawUrl: string): Promise<boolean> {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return false;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return false;
+
+  const host = parsed.hostname.replace(/^\[|\]$/g, ""); // strip IPv6 brackets
+  // Literal IP in the URL: check directly.
+  if (/^[\d.]+$/.test(host) || host.includes(":")) {
+    return !isPrivateIp(host);
+  }
+  if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local")) {
+    return false;
+  }
+  try {
+    const { lookup } = await import("node:dns/promises");
+    const addrs = await lookup(host, { all: true, verbatim: true });
+    if (addrs.length === 0) return false;
+    return addrs.every((a) => !isPrivateIp(a.address));
+  } catch {
+    return false; // DNS failure → refuse rather than fetch blindly
+  }
+}
+
 async function fetchHtml(url: string): Promise<FetchResult | null> {
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT, Accept: "text/html,*/*" },
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      redirect: "follow",
-    });
-    if (!res.ok) return null;
-    const ct = res.headers.get("content-type") ?? "";
-    if (!ct.includes("text/html") && !ct.includes("application/xhtml")) {
-      return null;
+    let currentUrl = url;
+    // Follow redirects manually so every hop is re-validated (SSRF).
+    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+      if (!(await isSafeUrl(currentUrl))) return null;
+      const res = await fetch(currentUrl, {
+        headers: { "User-Agent": USER_AGENT, Accept: "text/html,*/*" },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        redirect: "manual",
+      });
+      if (res.status >= 300 && res.status < 400) {
+        const location = res.headers.get("location");
+        if (!location) return null;
+        currentUrl = new URL(location, currentUrl).toString();
+        continue;
+      }
+      if (!res.ok) return null;
+      const ct = res.headers.get("content-type") ?? "";
+      if (!ct.includes("text/html") && !ct.includes("application/xhtml")) {
+        return null;
+      }
+      const html = await res.text();
+      return { url: currentUrl, html };
     }
-    const html = await res.text();
-    return { url: res.url || url, html };
+    return null; // too many redirects
   } catch {
     return null;
   }

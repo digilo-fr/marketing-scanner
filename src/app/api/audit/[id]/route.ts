@@ -12,7 +12,9 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-async function resolveUserEmail(req: NextRequest): Promise<string | null> {
+// NextAuth session only — the unauthenticated x-user-email header
+// fallback was removed (it let anyone impersonate a user).
+async function resolveUserEmail(): Promise<string | null> {
   try {
     const session = (await getServerSession(authOptions)) as
       | { user?: { email?: string } }
@@ -22,8 +24,7 @@ async function resolveUserEmail(req: NextRequest): Promise<string | null> {
   } catch (err) {
     console.warn("[audit/get] getServerSession failed:", (err as Error).message);
   }
-  const header = req.headers.get("x-user-email");
-  return header ? header.trim() : null;
+  return null;
 }
 
 interface RouteContext {
@@ -44,7 +45,7 @@ export async function GET(
     return NextResponse.json({ error: "Missing audit id" }, { status: 400 });
   }
 
-  const email = await resolveUserEmail(req);
+  const email = await resolveUserEmail();
   if (!email) {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
   }
