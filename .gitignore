@@ -16,3 +16,5 @@ coverage/
 .idea/
 .vscode/
 .vercel
+
+graphify-out/
