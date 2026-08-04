@@ -2,7 +2,7 @@
 
 > Écrit automatiquement par `journal-projet.py`. **Que des faits relevés sur le disque**,
 > jamais une supposition. Sert à retrouver le fil d'un projet sans avoir à tout réexpliquer —
-> notamment depuis Telegram. Dernière mise à jour : **04/08/2026 à 02:16**.
+> notamment depuis Telegram. Dernière mise à jour : **04/08/2026 à 04:05**.
 
 ## Où ça en est
 
@@ -12,6 +12,7 @@
 
 ## Ce qui a été fait récemment
 
+- 04/08 03:16 — backup auto session-close 2026-08-04 03:16
 - 03/08 19:05 — backup auto 2026-08-03 19:04:37
 - 04/07 00:14 — security+seo: correctifs audit (bypass x-user-email, SSRF, Sora, env emails, retry Sheets, meta, 404/error)
 - 04/07 00:11 — checkpoint: avant correctifs audit sécurité/SEO
@@ -19,7 +20,6 @@
 - 30/06 00:23 — Identité Digilo : accent indigo (ex-violet) + police Sora
 - 05/05 19:43 — feat+fix: contexte projet dans agents + fix 401 audit detail
 - 05/05 19:24 — fix: agents répondent en français + retry + fallback stub
-- 05/05 19:10 — fix: use waitUntil for async pipeline on Vercel
 
 ## Fichiers principaux
 
