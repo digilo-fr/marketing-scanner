@@ -2,7 +2,7 @@
 
 > Écrit automatiquement par `journal-projet.py`. **Que des faits relevés sur le disque**,
 > jamais une supposition. Sert à retrouver le fil d'un projet sans avoir à tout réexpliquer —
-> notamment depuis Telegram. Dernière mise à jour : **04/08/2026 à 10:07**.
+> notamment depuis Telegram. Dernière mise à jour : **04/08/2026 à 13:08**.
 
 ## Où ça en est
 
@@ -12,6 +12,7 @@
 
 ## Ce qui a été fait récemment
 
+- 04/08 10:08 — backup auto 2026-08-04 10:07:49
 - 04/08 07:07 — backup auto 2026-08-04 07:06:46
 - 04/08 04:06 — backup auto 2026-08-04 04:05:43
 - 04/08 03:16 — backup auto session-close 2026-08-04 03:16
@@ -19,7 +20,6 @@
 - 04/07 00:14 — security+seo: correctifs audit (bypass x-user-email, SSRF, Sora, env emails, retry Sheets, meta, 404/error)
 - 04/07 00:11 — checkpoint: avant correctifs audit sécurité/SEO
 - 30/06 01:54 — Identité Digilo : mode sombre permanent (classe dark + fond #0a0a12)
-- 30/06 00:23 — Identité Digilo : accent indigo (ex-violet) + police Sora
 
 ## Fichiers principaux
 
