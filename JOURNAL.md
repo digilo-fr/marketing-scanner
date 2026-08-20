@@ -2,7 +2,7 @@
 
 > Écrit automatiquement par `journal-projet.py`. **Que des faits relevés sur le disque**,
 > jamais une supposition. Sert à retrouver le fil d'un projet sans avoir à tout réexpliquer —
-> notamment depuis Telegram. Dernière mise à jour : **20/08/2026 à 05:11**.
+> notamment depuis Telegram. Dernière mise à jour : **20/08/2026 à 08:12**.
 
 ## Où ça en est
 
@@ -12,6 +12,7 @@
 
 ## Ce qui a été fait récemment
 
+- 20/08 05:12 — backup auto 2026-08-20 05:11:18
 - 20/08 02:10 — backup auto 2026-08-20 02:10:00
 - 19/08 23:09 — backup auto 2026-08-19 23:08:49
 - 19/08 20:08 — backup auto 2026-08-19 20:07:34
@@ -19,7 +20,6 @@
 - 19/08 14:05 — backup auto 2026-08-19 14:04:37
 - 19/08 11:04 — backup auto 2026-08-19 11:03:04
 - 19/08 08:02 — backup auto 2026-08-19 08:01:33
-- 19/08 05:01 — backup auto 2026-08-19 05:00:15
 
 ## Fichiers principaux
 
