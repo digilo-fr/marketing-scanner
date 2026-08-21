@@ -54,12 +54,12 @@ const FULL_ROTATION: ProviderChoice[] = [
   { provider: "groq", model: "moonshotai/kimi-k2-instruct" },
   { provider: "sambanova", model: "Meta-Llama-3.3-70B-Instruct" },
   { provider: "cerebras", model: "llama-3.3-70b" },
-  { provider: "groq", model: "openai/gpt-oss-120b" },
+  { provider: "groq", model: "llama-3.3-70b-versatile" },
 ];
 
 const FALLBACK_VOTER: ProviderChoice = {
   provider: "groq",
-  model: "openai/gpt-oss-120b",
+  model: "llama-3.3-70b-versatile",
 };
 
 /**
@@ -74,7 +74,7 @@ export function pickProvidersForTier(
   agentIndex: number
 ): ProviderChoice[] {
   if (tier === "quick") {
-    return [{ provider: "groq", model: "openai/gpt-oss-120b" }];
+    return [{ provider: "groq", model: "llama-3.3-70b-versatile" }];
   }
 
   const primary =
