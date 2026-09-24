@@ -2,16 +2,17 @@
 
 > Écrit automatiquement par `journal-projet.py`. **Que des faits relevés sur le disque**,
 > jamais une supposition. Sert à retrouver le fil d'un projet sans avoir à tout réexpliquer —
-> notamment depuis Telegram. Dernière mise à jour : **24/09/2026 à 05:06**.
+> notamment depuis Telegram. Dernière mise à jour : **24/09/2026 à 08:08**.
 
 ## Où ça en est
 
 - Branche **main** · dépôt https://github.com/digilo-fr/marketing-scanner.git
-- ⚠️ **1 fichier(s) modifié(s) non enregistré(s)**
+- Rien en attente : tout est enregistré
 - En ligne : https://marketing-scanner.vercel.app
 
 ## Ce qui a été fait récemment
 
+- 24/09 05:07 — backup auto 2026-09-24 05:06:42
 - 24/09 02:05 — backup auto 2026-09-24 02:05:24
 - 23/09 23:04 — backup auto 2026-09-23 23:04:06
 - 23/09 19:56 — backup auto 2026-09-23 19:56:27
@@ -19,7 +20,6 @@
 - 23/09 13:01 — backup auto 2026-09-23 13:01:25
 - 23/09 09:59 — backup auto 2026-09-23 09:58:45
 - 23/09 06:57 — backup auto 2026-09-23 06:57:21
-- 23/09 03:55 — backup auto 2026-09-23 03:55:23
 
 ## Fichiers principaux
 
